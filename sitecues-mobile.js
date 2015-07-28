@@ -571,8 +571,8 @@
         elem.style.opacity = '0';
         elem.style.position = 'fixed';
         elem.style.zIndex = '2147483645';  // we will sit 2 levels below uppermost layer
-        elem.style.bottom = '200px';
-        elem.style.right = '300px';
+        elem.style.bottom = '5%';
+        elem.style.right = '5%';
         // elem.style.top = '70vh';
         // elem.style.left = '70vw';
         // elem.style.right = '30vw';
