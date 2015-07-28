@@ -1,3 +1,13 @@
+// todo: in the first version of the product we will only support bp, tts and invert contrast which
+// afaik don't require internet connection so we might preserve online-offline code until later.
+
+// todo: many functions have 'result' variable that is very generic,
+// i would like to give the variables more descriptive names
+
+// todo: many functions are not used anymore, cleanup
+
+// todo: split the code accross features, i.e.: core, badge, text-select, speech, invert-contrast, online-offline
+
 (function () {
 
     'use strict';
@@ -7,10 +17,12 @@
     window.sitecues = window.sitecues || {};
     sitecues = window.sitecues;
 
+    // todo: what about the other protocols?
     config = {
         protocol : 'https:'
     };
 
+    // todo: probably makes sense to have this in init()
     (function () {
 
         // we will expose these on the state object...
@@ -96,6 +108,11 @@
         );
     })();
 
+    /*
+    PUBLIC API
+        todo: maybe move it to the top of the file since it's important
+        todo: should be documented while design process
+     */
     function exportPublicApi() {
 
         // Public interfaces...
@@ -237,10 +254,11 @@
         return result;
     }
 
+    /*
+     This function is designed to deep copy all arguments into
+     a new, single-level array. It remains generic by only
+     */
     function flatten() {
-
-        // This function is designed to deep copy all arguments into
-        // a new, single-level array. It remains generic by only
 
         var queue = Array.prototype.slice.call(arguments),  // convert arguments to a true array and initialize the queue
             item, i, result = [];
@@ -286,6 +304,7 @@
 
     // namespace('foo') // returns window.foo or {}.foo
     // namespace(myObj, 'hello.foo') // returns myObj.hello.foo
+    // todo: the idea of namespaces is great but i don't see the need to complicate the code here
     function namespace() {
 
         var defaultBase  = getTheGlobalObject() || {},
@@ -330,7 +349,7 @@
 
     // TODO: Make a utility function to translate between x, width, innerWidth, left, right, etc.
 
-    function getVieport() {
+    function getViewport() {
 
         var result;
 
@@ -343,6 +362,8 @@
     }
 
     function getViewportPercent(data, direction, includeUnit) {
+
+        var result;
 
         // This function is designed to convert pixel measurements
         // into a percentage of the current viewport.
@@ -362,7 +383,7 @@
         direction = 'innerWidth';
 
         if (!Number.isNaN(dataFloat)) {
-            dataFlaotString = dataFloat.toString();
+            dataFloatString = dataFloat.toString();
             dataUnit = dataString.substring(dataFlaotString.length);
         }
 
@@ -432,6 +453,7 @@
         return result;
     }
 
+    // todo: the name is misleading b/c it returnes all the voices, not only the best one
     function getBestVoice(voices) {
 
         var result = 0;
@@ -444,6 +466,7 @@
     }
 
     // speak text to the user...
+    // todo: using native browser APIs
     function speak(text, voice, polite, force) {
 
         var speechApi = window.speechSynthesis,
@@ -463,6 +486,7 @@
             speech          = new SpeechSynthesisUtterance();
             speech.voice    = bestVoice;  // Note: some voices don't support altering their settings
             console.log('Speaking with:', bestVoice.name);
+            // todo: add support for multi-lang
             speech.lang     = 'en-US';
             // speech.voiceURI = 'native';
             speech.volume   = 1;  // float from 0 to 1, default is 1
@@ -505,6 +529,7 @@
         }
     }
 
+    // todo: what's the difference between polite and force speak?
     function politeSpeak(text, voice) {
         speak(text, voice, true);
     }
@@ -591,6 +616,7 @@
         return result;
     }
 
+    // todo: maybe prepare a placeholder image that is available from native?
     function getBadgeImage() {
 
         // This function is designed to return an image element, which will be a child of the
@@ -611,6 +637,8 @@
         return result;
     }
 
+
+    // todo: this function has a side effect(append) that should be taken out to a separate function
     function getBadgeElement() {
 
         var wrapper = getBadgeWrapper(),  // top of the structure
@@ -640,6 +668,7 @@
         function moveBadge(event) {
             console.log('Moved badge:', event);
 
+            // todo: if top and/or left are undefined then set '0'
             badge.style.top = (parseFloat(getComputedStyle(badge).top) + event.clientY - currentMousePosition.y) + 'px';
             badge.style.left = (parseFloat(getComputedStyle(badge).left) + event.clientX - currentMousePosition.x) + 'px';
 
@@ -714,6 +743,10 @@
         return elem;
     }
 
+    /**
+     * Prepare and show sitecues badge and other UI elements.
+     * @returns {*}
+     */
     function showUserInterface() {
 
         var badge = getBadgeElement(),
@@ -721,11 +754,13 @@
 
         console.log('sitecues message: Showing interface.');
 
+        // todo: this functionality is not showing the badge, take it out to a separate method.
         badge.addEventListener('click', onBadgeClick);
         addTouchSupport(badge);
         attachBadge(badge);
         showBadge(badge);
 
+        // todo: return 'undefined' if there is no element is ready to use.
         return result;
     }
 
@@ -749,6 +784,8 @@
 
         // TODO: Thought experiment: what should typing in a text field do?
 
+        // todo: make sure the key code are valid for all the supported browsers & different platforms
+
         // if the key is 's' (as in speech)...
         if (event.keyCode === 83) {
             toggleSpeechWithCue();
@@ -759,6 +796,7 @@
         }
     }
 
+    // todo: why do we care about 'voicechanged' event?
     function onFirstVoicesChanged(event) {
         console.log('First voice loaded.', event);
         forceSpeak('sightcues is ready.');
@@ -821,6 +859,9 @@
 
     // do everything we need to start running our application...
     function init() {
+
+        // todo: no need to initialize the constants here,
+        // we can take those out to a higher level of scopes
 
         var okReadyStates = [  // we may initialize based on these document states
                 'interactive', // DOM is ready, page is usable, like addEventListener('DOMContentLoaded' ...)
@@ -899,6 +940,7 @@
 
     }
 
+    // Start point
     init();
 
 }());
