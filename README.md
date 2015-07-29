@@ -18,9 +18,9 @@ To use this app
 ### Features
 Since the project is in proto stage this section may differ heavily. Currently, it contains the following functionality:
 * Detect if the device connected to the Internet or not
-* Badge
-* TTS
-* Invert contrast
+* Badge: appears in the bottom right corner. Click the icon to speech on/off. You'll hear the voice cues.
+* TTS:   when speech is on, select the text to read aloud. You should hear the voice.
+* Invert contrast: TBD.
 
 ### Design
 It's an IIFE that runs on page load.
