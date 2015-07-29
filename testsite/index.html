@@ -79,7 +79,7 @@
                 <h1>Your Favorite Source of Free Bootstrap Themes</h1>
                 <hr>
                 <p>Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!</p>
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">Read to Me</a>
             </div>
         </div>
     </header>
@@ -279,6 +279,93 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="js/creative.js"></script>
+
+    <script>
+        // Setup stylesheet.
+        (function () {
+
+            var style = document.createElement("style"),
+                sheet;
+
+            function addCSSRule(sheet, selector, rules, index) {
+                if("insertRule" in sheet) {
+                    sheet.insertRule(selector + "{" + rules + "}", index);
+                }
+                else if("addRule" in sheet) {
+                    sheet.addRule(selector, rules, index);
+                }
+            }
+
+            // WebKit hack :(
+            style.appendChild(document.createTextNode(""));
+
+            // Add the <style> element to the page
+            document.head.appendChild(style);
+
+            sheet = style.sheet;
+
+            addCSSRule(
+                sheet,
+                'strong',
+                'background: hsla(220, 90%, 60%, 0.5);'
+            );
+        }());
+
+        // Read and highlight.
+        (function () {
+            var speech = new SpeechSynthesisUtterance(),
+                elem   = document.querySelector('div.header-content p'),
+                text   = elem.textContent,
+                words  = text.match(/\w+/g),
+                voices,
+                i = 0;
+
+            function onBoundary(event) {
+                var lastWord = words[i - 1];
+                var word = words[i];
+                console.log('Word  :', word);
+                console.log('Index :', event.charIndex);
+                // De-emphasize the last word.
+                elem.innerHTML = elem.innerHTML.replace('<strong>' + lastWord + '</strong>', lastWord);
+                // Emphasize current word.
+                elem.innerHTML = elem.innerHTML.replace(word, '<strong>$&</strong>');
+                i += 1;
+            }
+            function read() {
+                speech.voice = voices[10];  // Ava
+                speech.text  = text;
+                speech.lang  = 'en-US';
+                speech.addEventListener('boundary', onBoundary);
+                speechSynthesis.speak(speech);
+            }
+            window.read = read;
+
+            function onVoicesChanged(event) {
+                // Update the known voices list.
+                voices = speechSynthesis.getVoices();
+            }
+            //window.addEventListener('voiceschanged', onFirstVoicesChanged, true);
+            speechSynthesis.addEventListener('voiceschanged', onVoicesChanged, true);
+
+            // Look for an element to use as a click target that will
+            // start out word highlighting demo.
+            var triggerSelector = 'div.header-content a[href="#about"]',
+                trigger = document.querySelector(triggerSelector);
+
+            function onClick(event) {
+                if (event.target === trigger) {
+                    read();
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                    event.preventDefault();
+                    event.returnValue = false;
+
+                    return false;
+                }
+            }
+            window.addEventListener('click', onClick, true);
+        }());
+    </script>s
 
 </body>
 
