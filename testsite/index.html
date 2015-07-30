@@ -71,9 +71,9 @@
         <header>
             <div class="header-content">
                 <div class="header-content-inner">
-                    <h1>Your Favorite Source of Free Bootstrap Themes</h1>
+                    <h1>sitecues Mobile is here to rescue the day</h1>
                     <hr>
-                    <p>Start Bootstrap can help you build better websites using the Bootstrap CSS framework! Just download your template and start going, no strings attached!</p>
+                    <p>We have offline text-to-speech, word highlighting, connectivity detection, keyboard commands, and touch support.</p>
                     <a href="#about" class="btn btn-primary btn-xl page-scroll">Read to Me</a>
                 </div>
             </div>
@@ -307,57 +307,113 @@
 
             // Read and highlight.
             (function () {
-                var speech = new SpeechSynthesisUtterance(),
-                    elem   = document.querySelector('div.header-content p'),
-                    text   = elem.textContent,
-                    words  = text.match(/\w+/g),
-                    voices,
-                    i = 0;
+                var elem = document.querySelector('div.header-content h1'),
+                    voices;
 
-                function onBoundary(event) {
-                    var lastWord = words[i - 1];
-                    var word = words[i];
-                    console.log('Word  :', word);
-                    console.log('Index :', event.charIndex);
-                    // De-emphasize the last word.
-                    elem.innerHTML = elem.innerHTML.replace('<strong>' + lastWord + '</strong>', lastWord);
-                    // Emphasize current word.
-                    elem.innerHTML = elem.innerHTML.replace(word, '<strong>$&</strong>');
-                    i += 1;
-                }
-                function read() {
+                function read(target, useHighlight) {
+
+                    // TODO: Synthesis supports SSML. Find out if we can use this
+                    //       to make a custom dictionary system.
+
+                    var speech,         // an object representing the speech to speak
+                        text,           // all of the text from the target, as a string
+                        words,          // all of the words from the text, as an array
+                        wordIndex = 0,  // counter for traversing the words
+                        word;           // the current word being read
+
+                    // Determine usable DOM elements from CSS selectors.
+                    if (typeof target === 'string') {
+                        target = document.querySelector(target);
+                    }
+                    if (!target || typeof target !== 'object') {
+                        throw new Error('No usable target to read.');
+                    }
+                    // Highlight spoken text by default.
+                    if (typeof useHighlight === 'undefined') {
+                        useHighlight = true;
+                    }
+
+                    text  = target.textContent;
+                    words = text.match(/\w+/g);
+
+                    // Setup speech instance with desired metadata.
+                    speech = new SpeechSynthesisUtterance();
                     speech.voice = voices[10];  // Ava
-                    speech.text  = text;
+                    speech.text  = text.replace('sitecues', 'sight-cues');  // poor person's dictionary
                     speech.lang  = 'en-US';
-                    speech.addEventListener('boundary', onBoundary);
+
+                    function onBoundary(event) {
+
+                        var lastWord = words[wordIndex - 1];
+                            word     = words[wordIndex];
+
+                        console.log(
+                            'Highlighting \"' + word + '\" at index', event.charIndex
+                        );
+
+                        // Remove the highlighting for the last word, if there was one.
+                        if (wordIndex > 0) {
+                            target.innerHTML = target.innerHTML.replace(
+                                '<strong>' + lastWord + '</strong>',
+                                lastWord
+                            );
+                        }
+
+                        // Highlight current word.
+                        target.innerHTML = target.innerHTML.replace(
+                            word,
+                            '<strong>$&</strong>'
+                        );
+
+                        wordIndex += 1;
+                    }
+
+                    function onEnd(event) {
+                        var lastWord = words[wordIndex - 1];
+
+                        target.innerHTML = target.innerHTML.replace(
+                            '<strong>' + lastWord + '</strong>',
+                            lastWord
+                        );
+                    }
+
+                    if (useHighlight) {
+                        // When speech is playing, we listen for each
+                        // new word, in order to highlight it.
+                        speech.addEventListener('boundary', onBoundary);
+                        // When speech is done playing, we need to
+                        // clear the last highlighted text.
+                        speech.addEventListener('end', onEnd);
+                    }
+
+                    // Play the audio.
                     speechSynthesis.speak(speech);
                 }
-                window.read = read;
 
                 function onVoicesChanged(event) {
                     // Update the known voices list.
                     voices = speechSynthesis.getVoices();
                 }
-                //window.addEventListener('voiceschanged', onFirstVoicesChanged, true);
                 speechSynthesis.addEventListener('voiceschanged', onVoicesChanged, true);
 
                 // Look for an element to use as a click target that will
-                // start out word highlighting demo.
+                // start our word highlighting demo.
                 var triggerSelector = 'div.header-content a[href="#about"]',
                     trigger = document.querySelector(triggerSelector);
 
                 function onClick(event) {
                     if (event.target === trigger) {
-                        read();
+                        read(elem);
+                        // WORKAROUND: Another script on the testsite uses JS
+                        //             to scroll when our trigger is clicked.
+                        //             It is an unpleasant user experience.
                         event.stopPropagation();
-                        event.stopImmediatePropagation();
-                        event.preventDefault();
-                        event.returnValue = false;
-
-                        return false;
+                        event.preventDefault();  // Default scroll happens, too!
                     }
                 }
                 window.addEventListener('click', onClick, true);
+                window.read = read;
+                window.elem = elem;
             }());
         </script>s
     </body>
