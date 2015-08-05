@@ -47,10 +47,30 @@ function taskRunner(grunt) {
             requirejs : {
                 compile : {
                     options : {
-                        baseUrl : "path/to/base",
-                        mainConfigFile: "path/to/config.js",
-                        name : "path/to/almond", // assumes a production build using almond
-                        out  : "path/to/optimized.js"
+                        baseUrl : "./lib/",
+                        name    : 'core-amd',
+                        //create : true,
+                        out : 'build/sitecues.js',
+                        include : [
+                            '../node_modules/alameda/alameda.js'
+                        ],
+                        optimize : 'uglify2',
+                        uglify2: {
+                            //Example of a specialized config. If you are fine
+                            //with the default options, no need to specify
+                            //any of these properties.
+                            output: {
+                                beautify: true
+                            },
+                            compress: {
+                                sequences: false,
+                                global_defs: {
+                                    DEBUG: false
+                                }
+                            },
+                            warnings: true,
+                            mangle: false
+                        }
                     }
                 }
             }
@@ -62,9 +82,12 @@ function taskRunner(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     // Load the plugin that provides the "concat" task.
     grunt.loadNpmTasks('grunt-contrib-concat');
+    // Load the plugin that provides the "requirejs" task.
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     // Make a new task called "build".
-    grunt.registerTask('build', ['concat:core', 'concat:base', 'concat:sitecues'])
+    // grunt.registerTask('build', ['concat:core', 'concat:base', 'concat:sitecues'])
+    grunt.registerTask('build', ['requirejs:compile']);
 
     // Default task, will run if no task is specified.
     grunt.registerTask('default', ['clean', 'build']);
