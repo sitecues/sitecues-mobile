@@ -47,18 +47,26 @@ function taskRunner(grunt) {
             requirejs : {
                 compile : {
                     options : {
-                        baseUrl : "./lib/",
+                        // Directory to use as the basis for resolving most other relative paths.
+                        baseUrl : "lib",
+                        // Module that starts the dependency graph.
                         name    : 'core-amd',
                         //create : true,
+                        // Path to write the final output to.
                         out : 'build/sitecues.js',
+                        // Add the require() and define() functions as methods of our namespace,
+                        // to avoid conflicts with customer pages.
+                        namespace : 'sitecues',
                         include : [
-                            '../node_modules/alameda/alameda.js'
+                            '../node_modules/alameda/alameda'
                         ],
-                        optimize : 'uglify2',
+                        // Don't add an unnecessary, empty define() call for Alameda.
+                        skipModuleInsertion: true,
+                        optimize : 'none',
                         uglify2: {
-                            //Example of a specialized config. If you are fine
-                            //with the default options, no need to specify
-                            //any of these properties.
+                            // Example of a specialized config. If you are fine
+                            // with the default options, no need to specify
+                            // any of these properties.
                             output: {
                                 beautify: true
                             },
