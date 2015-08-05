@@ -1,0 +1,32 @@
+{
+  "name": "sitecues-mobile",
+  "version": "0.0.1",
+  "description": "Zoom and speech for mobile websites.",
+  "homepage": "https://sitecues.com",
+  "license": "SEE LICENSE IN LICENSE",
+  "author": {
+    "name": "Seth Holladay",
+    "email": "me@seth-holladay.com",
+    "url": "http://seth-holladay.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@bitbucket.org:ai_squared/sitecues-mobile.git"
+  },
+  "main": "lib/index.js",
+  "private": true,
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "keywords": [
+    "zoom",
+    "speech",
+    "mobile",
+    "touch"
+  ],
+}
