@@ -1,5 +1,7 @@
 'use strict';
 
+var NAMESPACE = 'sitecues';
+
 function taskRunner(grunt) {
 
     // Task configuration.
@@ -31,21 +33,17 @@ function taskRunner(grunt) {
             },
 
             concat : {
-                core : {
-                    src  : ['lib/require-config', 'node_modules/alameda/alameda.js'],
-                    dest : 'build/core.js'
+                setup : {
+                    src  : ['lib/namespace.js', 'lib/require-config.js', 'node_modules/alameda/alameda.js', 'lib/require-hooks.js'],
+                    dest : 'build/setup.js'
                 },
-                base : {
-                    src  : ['lib/a.js', 'lib/b.js'],
-                    dest : 'build/base.js'
-                },
-                sitecues : {
-                    src  : ['build/core.js', 'build/base.js'],
+                sitecues : {  // NOTE: core.js comes from requirejs
+                    src  : ['build/setup.js', 'build/core.js'],
                     dest : 'build/sitecues.js'
                 }
             },
             requirejs : {
-                compile : {
+                core : {
                     options : {
                         // Directory to use as the basis for resolving most other relative paths.
                         baseUrl : "lib",
@@ -53,15 +51,10 @@ function taskRunner(grunt) {
                         name    : 'core-amd',
                         //create : true,
                         // Path to write the final output to.
-                        out : 'build/sitecues.js',
+                        out : 'build/core.js',
                         // Add the require() and define() functions as methods of our namespace,
                         // to avoid conflicts with customer pages.
-                        namespace : 'sitecues',
-                        include : [
-                            '../node_modules/alameda/alameda'
-                        ],
-                        // Don't add an unnecessary, empty define() call for Alameda.
-                        skipModuleInsertion: true,
+                        namespace : NAMESPACE,
                         optimize : 'none',
                         uglify2: {
                             // Example of a specialized config. If you are fine
@@ -95,7 +88,7 @@ function taskRunner(grunt) {
 
     // Make a new task called "build".
     // grunt.registerTask('build', ['concat:core', 'concat:base', 'concat:sitecues'])
-    grunt.registerTask('build', ['requirejs:compile']);
+    grunt.registerTask('build', ['concat:setup', 'requirejs:core', 'concat:sitecues']);
 
     // Default task, will run if no task is specified.
     grunt.registerTask('default', ['clean', 'build']);
