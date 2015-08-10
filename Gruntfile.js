@@ -1,10 +1,23 @@
+// This file defines the specification for our build system.
+
 'use strict';
 
-var AMD_RUNTIME_CONFIG_PATH = './lib/require-config.js',
+var // This path is relative to this file itself.
+    AMD_LOADER_CONFIG_PATH = './lib/require-config.js',
+    // This path is relative to the baseUrl set later.
     AMD_LOADER_PATH = '../node_modules/alameda/alameda',
+    // Our global namespace in the browser.
     NAMESPACE       = 'sitecues',
+    // File system helper utilities.
     fs              = require('fs'),
-    amdRuntimeConfig;
+    amdLoaderConfig,
+    pathsConfig = {},
+    moduleId    = {
+        CORE       : 'core',
+        AMD_LOADER : 'amdLoader'
+    };
+
+pathsConfig[moduleId.AMD_LOADER] = AMD_LOADER_PATH;
 
 // Callback for each file that the RequireJS optimizer (r.js)
 // reads while its tracing dependencies for our build.
@@ -17,12 +30,12 @@ function onBuildRead(moduleName, path, contents) {
 
     // By default, assume we don't want to modify the file.
     var result = contents;
-
-    if (moduleName === AMD_LOADER_PATH) {
-        amdRuntimeConfig = fs.readFileSync(AMD_RUNTIME_CONFIG_PATH, 'utf8');
+    console.log('moduleName:', moduleName);
+    if (moduleName === moduleId.AMD_LOADER) {
+        amdLoaderConfig = fs.readFileSync(AMD_LOADER_CONFIG_PATH, 'utf8');
         // Prepend our Alameda runtime configuration to Alameda itself,
         // so that we can use options like "skipDataMain" in it.
-        result = amdRuntimeConfig + result;
+        result = amdLoaderConfig + result;
     }
 
     // console.log('This is onBuildRead:');
@@ -77,18 +90,34 @@ function taskRunner(grunt) {
                         // Directory to use as the basis for resolving most other relative paths.
                         baseUrl : "lib",
                         // Module that starts the dependency graph.
-                        name    : 'core',
+                        name    : moduleId.CORE,
                         // Path to write the final output to.
                         out : 'build/sitecues.js',
                         // Add the require() and define() functions as methods of our namespace,
                         // to avoid conflicts with customer pages.
                         namespace : NAMESPACE,
+
+                        // Describe folders (and optionally, their "main" file)
+                        packages : [
+                            'ui',
+                            'audio'
+                        ],
+
+                        // Tell the optimizer where certain modules can be found on disk,
+                        // in cases where it has no other way to figure that out.
+                        // Without this, the paths would have to be used as Module IDs
+                        // and that is just ugly and not fun.
+                        paths : pathsConfig,
+                        // At the end of the built file, trigger these modules.
+                        insertRequire : [
+                            moduleId.CORE
+                        ],
                         // Add other files or modules to the build, which are not listed
                         // as dependencies of the main entry point.
                         include : [
                             // Add Alameda, our AMD module loader, so that we can load
                             // code on-demand at runtime.
-                            AMD_LOADER_PATH
+                            moduleId.AMD_LOADER
                         ],
                         // Run a callback for each file in the build, so that we can modify it
                         // before it gets written to disk.
