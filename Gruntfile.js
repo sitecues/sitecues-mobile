@@ -3,6 +3,8 @@
 'use strict';
 
 var // This path is relative to this file itself.
+    SANITY_CHECK_PATH = './lib/sanity-check.js',
+    // This path is relative to this file itself.
     AMD_LOADER_CONFIG_PATH = './lib/require-config.js',
     // This path is relative to the baseUrl set later.
     AMD_LOADER_PATH = '../node_modules/alameda/alameda',
@@ -10,8 +12,25 @@ var // This path is relative to this file itself.
     NAMESPACE       = 'sitecues',
     // File system helper utilities.
     fs              = require('fs'),
+    // A block of code to insert into the built file, which will sanitize our
+    // public namespace so that our modules can assume it is usable.
+    sanityCheck,
+    // A block of code to insert into the built file, which will tell our AMD
+    // loader how to behave at runtime. This is different than the build
+    // configuration given to the optimizer, although they may overlap.
     amdLoaderConfig,
-    pathsConfig = {},
+    // Specify where on disk a given module name can be found. This helps avoid
+    // naming modules based on their path and the confusion that causes.
+    pathsConfig = {
+        // Tell the optimizer that it need not worry about "Promise", because
+        // that is a special module ID set in our Alameda configuration file,
+        // which asks it to expose its internal implementation of "Prime".
+        // In other words, it is already bundled if Alameda is.
+        'Promise' : 'empty:'
+    },
+    // Even though they look similar, Module IDs are not paths. Here we store
+    // the names of modules we will need to refer to by name in other parts
+    // of the build configuration.
     moduleId    = {
         CORE       : 'core',
         AMD_LOADER : 'amdLoader'
@@ -19,12 +38,12 @@ var // This path is relative to this file itself.
 
 pathsConfig[moduleId.AMD_LOADER] = AMD_LOADER_PATH;
 
-// Callback for each file that the RequireJS optimizer (r.js)
-// reads while its tracing dependencies for our build.
+// Callback for each file that the RequireJS optimizer (r.js) reads while it is
+// tracing dependencies for our build.
 function onBuildRead(moduleName, path, contents) {
 
     // TODO: Figure out why the RequireJS optimizer r.js is calling
-    //       our onBuildRead callback twice for each file.
+    //       our onBuildRead callback twice for some files.
     //       It doesn't seem to care about the return value the
     //       first time around, but it does the second. Weird.
 
@@ -32,10 +51,16 @@ function onBuildRead(moduleName, path, contents) {
     var result = contents;
     console.log('moduleName:', moduleName);
     if (moduleName === moduleId.AMD_LOADER) {
+        sanityCheck     = fs.readFileSync(SANITY_CHECK_PATH, 'utf8')
         amdLoaderConfig = fs.readFileSync(AMD_LOADER_CONFIG_PATH, 'utf8');
         // Prepend our Alameda runtime configuration to Alameda itself,
         // so that we can use options like "skipDataMain" in it.
-        result = amdLoaderConfig + result;
+        // We also take the opportunity to prepend our sanity check,
+        // because the optimizer gaurantees this will end up at the
+        // top of the built file.
+        result = sanityCheck     +
+                 amdLoaderConfig +
+                 result;
     }
 
     // console.log('This is onBuildRead:');
@@ -102,7 +127,6 @@ function taskRunner(grunt) {
                             'ui',
                             'audio'
                         ],
-
                         // Tell the optimizer where certain modules can be found on disk,
                         // in cases where it has no other way to figure that out.
                         // Without this, the paths would have to be used as Module IDs
@@ -127,26 +151,51 @@ function taskRunner(grunt) {
 
                         // Prevent the optimizer from creating empty stub modules for files that
                         // are included in the build, but don't call define() by themselves.
-                        skipModuleInsertion: true,
+                        skipModuleInsertion : true,
+                        // Output a source map file, which tells the browser
+                        // how to pretend the built file is not minified
+                        // when developer tools are used.
+                        generateSourceMaps : true,
+                        // Scan for code comments containing license info
+                        // and try to keep them from being removed during
+                        // the minification process. This is not
+                        // supported when using source maps.
+                        preserveLicenseComments : false,
                         // Choose a tool to minify the build.
                         optimize : 'none',
                         // Configure the Uglify2 minifer. These are only applied if this
                         // tool is in use by the "optimize" option.
-                        uglify2: {
-                            // Example of a specialized config. If you are fine
-                            // with the default options, no need to specify
-                            // any of these properties.
-                            output: {
-                                beautify: true
+                        uglify2 : {
+                            output : {
+                                beautify : false
                             },
+                            mangle   : true,
+                            warnings : true,
                             compress: {
-                                sequences: false,
-                                global_defs: {
-                                    DEBUG: false
-                                }
-                            },
-                            warnings: true,
-                            mangle: false
+                                booleans      : true,
+                                cascade       : true,
+                                comparisons   : true,
+                                conditionals  : true,
+                                dead_code     : true,
+                                drop_debugger : true,
+                                evaluate      : true,
+                                hoist_funs    : true,
+                                hoist_vars    : true,
+                                if_return     : true,
+                                join_vars     : true,
+                                loops         : true,
+                                negate_iife   : true,
+                                properties    : true,
+                                sequences     : true,
+                                unused        : true,
+
+                                drop_console  : false,
+                                keep_fargs    : false,
+                                keep_fnames   : false,
+                                pure_funcs    : false,
+                                pure_getters  : false,
+                                unsafe        : false
+                            }
                         }
                     }
                 }
