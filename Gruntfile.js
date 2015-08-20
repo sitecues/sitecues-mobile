@@ -150,7 +150,8 @@ function taskRunner(grunt) {
                         // before it gets written to disk.
                         onBuildRead : onBuildRead,
 
-                        // TODO: We probably want to add lib/namespace.js with onBuildWrite
+                        // TODO: Figure out expected behavior of useStrict
+                        // useStrict : true,
 
                         // Prevent the optimizer from creating empty stub modules for files that
                         // are included in the build, but don't call define() by themselves.
