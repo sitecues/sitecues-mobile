@@ -22,10 +22,10 @@ var // This path is relative to this file itself.
     // Specify where on disk a given module name can be found. This helps avoid
     // naming modules based on their path and the confusion that causes.
     pathsConfig = {
-        // Tell the optimizer that it need not worry about "Promise", because
-        // that is a special module ID set in our Alameda configuration file,
-        // which asks it to expose its internal implementation of "Prime".
-        // In other words, it is already bundled if Alameda is.
+        // Tell the optimizer it doesn't need to try to find "Promise", because
+        // that is a special module ID set in the configuration for Alameda,
+        // which asks it to expose its internal implementation of "prim".
+        // In other words, if Alameda is bundled, so is "Promise".
         'Promise' : 'empty:'
     },
     // Even though they look similar, Module IDs are not paths. Here we store
@@ -80,8 +80,8 @@ function taskRunner(grunt) {
     // Task configuration.
     grunt.initConfig(
         {
-            // Getting the full node app configuration as an object
-            // which can be used internally.
+            // Get the full configuration for our app as an object
+            // which can be used internally in template strings.
             pkg : grunt.file.readJSON('package.json'),
 
             // Clean configuration, used to wipe out temporary build data,
@@ -110,6 +110,9 @@ function taskRunner(grunt) {
             // },
 
             requirejs : {
+                // The "core" task bundles the files needed to initialize the
+                // application for first use. Other modules or bundles may be
+                // downloaded on-demand at runtime.
                 core : {
                     options : {
                         // Directory to use as the basis for resolving most other relative paths.
@@ -213,6 +216,9 @@ function taskRunner(grunt) {
 
     // Make a new task called "build".
     grunt.registerTask('build', ['requirejs:core']);
+
+    // Make a new task called "build".
+    grunt.registerTask('dev', ['build']);
 
     // Default task, will run if no task is specified.
     grunt.registerTask('default', ['clean', 'build']);
