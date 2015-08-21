@@ -1,0 +1,72 @@
+/* todo: take out css styles here...*/
+
+/* NEEDS BOOTSTRAP AS A DEPENDENCY */
+
+#sc-menu {
+    width: 80vw;
+    height: 15vh;
+    position: fixed;
+    bottom: 0;
+    right: 20vw;
+    opacity: 0;
+    display: none;
+    z-index: 100
+}
+
+#sc-menu .btn {
+    width: 14vw;
+    height: 8vh;
+    border: 1px solid #ccc;
+    padding: 0;
+    font-size: 4vh;
+    top: 4vh;
+    right: 11vw;
+    position: absolute;
+}
+
+#sc-menu .btn:hover {
+    transform: scale(1.1);
+}
+
+#sc-menu .btn-default,
+#sc-menu .btn-success {
+    transition: all .8s;
+}
+
+#sc-menu .btn-default {
+    color: gray;
+}
+
+#sc-dimmer {
+    width: 100vw;
+    height: 15vh;
+    background: #000;
+     /*take care about scroll offset.*/
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    opacity: 0;
+    display: none;
+    z-index: 10
+}
+
+#sc-settings {
+    width: 80vw;
+    height: 60vh;
+    position: fixed;
+    top: 20vh;
+    left: 10vw;
+    background: #000;
+    color: white;
+    border-radius: 10px;
+    padding: 0 10%;
+    box-shadow: 0 0 10px 2px rgba(255,255,255,0.75);
+    opacity: 0;
+    display: none;
+    z-index: 100;
+}
+
+.drop-shadow {
+    -webkit-box-shadow: 0 0 10px 2px rgba(255,255,255,0.75);
+    box-shadow: 0 0 10px 2px rgba(255,255,255,0.75);
+}
