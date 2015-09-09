@@ -2,10 +2,11 @@
 
 'use strict';
 
-var // This path is relative to this file itself.
-    PREAMBLE_PATH = './preamble.js',
+var path            = require('path'),
+    // This path is relative to this file itself.
+    PREAMBLE_PATH   = path.join(__dirname, 'preamble.js'),
     // This path is relative to the baseUrl set later.
-    AMD_LOADER_PATH = '../node_modules/alameda/alameda',
+    AMD_LOADER_PATH = path.join(__dirname, 'node_modules/alameda/alameda'),
     // Our global namespace in the browser.
     NAMESPACE       = 'sitecues',
     // File system helper utilities.
@@ -108,7 +109,7 @@ function taskRunner(grunt) {
                 core : {
                     options : {
                         // Directory to use as the basis for resolving most other relative paths.
-                        baseUrl : "lib",
+                        baseUrl : "lib/js",
                         // Module that starts the dependency graph.
                         name    : moduleId.CORE,
                         // Path to write the final output to.
