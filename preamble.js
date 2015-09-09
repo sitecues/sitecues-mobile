@@ -1,12 +1,40 @@
-// This file sets up the configuration for Alameda, our AMD module loader.
-// Alameda is similar to RequireJS and even uses the same namespace.
-// We prepend this to Alameda itself at build time.
+/*
+    lib-setup.js
+    ------------
 
-// IMPORTANT SECURITY NOTE:
-//    Please ensure that the following assignment occurs immediately
-//    before any RequireJS-based AMD loader we may use. If not, it
-//    could lead to customers gaining control of our loader config,
-//    For details, see: https://github.com/jrburke/r.js/issues/843
+    This file is the first piece of code to run with the initial download
+    of sitecues. It ensures that our namespace is setup properly and then
+    configures Alameda, our AMD module loader,
+
+    Alameda is similar to RequireJS and even uses the same namespace.
+    We prepend this file to Alameda itself at build time.
+*/
+
+if (!window.sitecues || typeof window.sitecues !== 'object') {
+    window.sitecues = {};
+}
+
+var sitecues = window.sitecues;
+
+if (!sitecues.config || typeof sitecues.config !== 'object') {
+    sitecues.config = {};
+}
+
+if (!sitecues.config.siteId) {
+    sitecues.config.siteId = '';
+}
+
+if (!sitecues.config.scriptUrl) {
+    sitecues.config.scriptUrl = '';
+}
+
+/*
+    IMPORTANT SECURITY NOTE:
+    Please ensure that the following assignment occurs immediately
+    before any RequireJS-based AMD loader we may use. If not, it
+    could lead to customers gaining control of our loader config,
+    For details, see: https://github.com/jrburke/r.js/issues/843
+*/
 
 // NOTE: This variable name is special. Alameda looks for this to decide if
 //       configuration has been declared prior to it running.

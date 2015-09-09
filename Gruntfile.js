@@ -3,25 +3,21 @@
 'use strict';
 
 var // This path is relative to this file itself.
-    SANITY_CHECK_PATH = './lib/sanity-check.js',
-    // This path is relative to this file itself.
-    AMD_LOADER_CONFIG_PATH = './lib/require-config.js',
+    PREAMBLE_PATH = './preamble.js',
     // This path is relative to the baseUrl set later.
     AMD_LOADER_PATH = '../node_modules/alameda/alameda',
     // Our global namespace in the browser.
     NAMESPACE       = 'sitecues',
     // File system helper utilities.
     fs              = require('fs'),
-    // A block of code to insert into the built file, which will sanitize our
-    // public namespace so that our modules can assume it is usable.
-    sanityCheck,
-    // A block of code to insert into the built file, which will tell our AMD
-    // loader how to behave at runtime. This is different than the build
-    // configuration given to the optimizer, although they may overlap.
-    amdLoaderConfig,
+    // A block of code to insert into sitecues.js, which will sanitize our
+    // public namespace and tell our AMD loader how to behave at runtime.
+    // This is different than the build configuration given to the
+    // optimizer, although they may overlap.
+    preamble = fs.readFileSync(PREAMBLE_PATH, 'utf8'),
     // Specify where on disk a given module name can be found. This helps avoid
     // naming modules based on their path and the confusion that causes.
-    pathsConfig = {
+    optimizerPaths = {
         // Tell the optimizer it doesn't need to try to find "Promise", because
         // that is a special module ID set in the configuration for Alameda,
         // which asks it to expose its internal implementation of "prim".
@@ -36,7 +32,7 @@ var // This path is relative to this file itself.
         AMD_LOADER : 'amdLoader'
     };
 
-pathsConfig[moduleId.AMD_LOADER] = AMD_LOADER_PATH;
+optimizerPaths[moduleId.AMD_LOADER] = AMD_LOADER_PATH;
 
 // Callback for each file that the RequireJS optimizer (r.js) reads while it is
 // tracing dependencies for our build.
@@ -51,16 +47,12 @@ function onBuildRead(moduleName, path, contents) {
     var result = contents;
     console.log('moduleName:', moduleName);
     if (moduleName === moduleId.AMD_LOADER) {
-        sanityCheck     = fs.readFileSync(SANITY_CHECK_PATH, 'utf8')
-        amdLoaderConfig = fs.readFileSync(AMD_LOADER_CONFIG_PATH, 'utf8');
         // Prepend our Alameda runtime configuration to Alameda itself,
         // so that we can use options like "skipDataMain" in it.
         // We also take the opportunity to prepend our sanity check,
         // because the optimizer gaurantees this will end up at the
         // top of the built file.
-        result = sanityCheck     +
-                 amdLoaderConfig +
-                 result;
+        result = preamble + result;
     }
 
     // console.log('This is onBuildRead:');
@@ -134,7 +126,7 @@ function taskRunner(grunt) {
                         // in cases where it has no other way to figure that out.
                         // Without this, the paths would have to be used as Module IDs
                         // and that is just ugly and not fun.
-                        paths : pathsConfig,
+                        paths : optimizerPaths,
                         // At the end of the built file, trigger these modules.
                         insertRequire : [
                             moduleId.CORE
