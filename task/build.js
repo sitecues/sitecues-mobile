@@ -10,20 +10,18 @@ var // Helpers for disk I/O and other filesystem issues.
     pathUtil = require('path'),
     path = {
         // This path is relative to this file itself.
-        PREAMBLE   : pathUtil.join(__dirname, 'preamble.js'),
+        PREAMBLE   : pathUtil.join(__dirname, '..', 'preamble.js'),
         // This path is relative to the baseUrl set later.
-        AMD_LOADER : pathUtil.join(__dirname, 'node_modules/alameda/alameda'),
+        AMD_LOADER : pathUtil.join(__dirname, '..', 'node_modules', 'alameda', 'alameda'),
     },
     // r.js build optimizer, used to bundle up the library for best efficiency.
     optimizer = require('requirejs'),
-
     // Our global namespace in the browser.
     NAMESPACE = 'sitecues',
     // A block of code to insert into the built file, which will tell our AMD
     // loader how to behave at runtime. This is different than the build
     // configuration given to the optimizer, although they may overlap.
-    preamble = fs.readFileSync(path.PREAMBLE, 'utf8'),
-
+    preamble,
     // Here we store the names of modules we will need to refer to by name in
     // other parts of the build configuration. Even though they look similar,
     // module IDs are not paths. They are somewhat arbitrarily named
@@ -76,7 +74,6 @@ function onBuildRead(moduleName, path, contents) {
     return result;
 }
 
-
 var optimizerConfig = {
     // Directory to use as the basis for resolving most other relative paths.
     baseUrl : 'lib/js',
@@ -92,8 +89,7 @@ var optimizerConfig = {
             // as dependencies of the main entry point.
             include : [
                 moduleId.AMD_LOADER,
-                moduleId.CORE,
-                'dynamic'
+                moduleId.CORE
             ],
             // At the end of the built file, trigger these modules.
             insertRequire : [
@@ -175,24 +171,17 @@ var optimizerConfig = {
     }
 };
 
-
-
-
-
 function runBuild(resolve, reject) {
     optimizer.optimize(
         optimizerConfig,
         resolve,
-        function (arg1, arg2) {
-            console.log(
-                'Build failure!\nArg1:', arg1 + '\nArg2:', arg2
-            );
-            reject(arg1, arg2);
-        }
+        reject
     );
 }
 
 function build() {
+    // TODO: Make this async, chain the runBuild promise after it.
+    preamble = fs.readFileSync(path.PREAMBLE, 'utf8');
     return new Promise(runBuild);
 }
 
