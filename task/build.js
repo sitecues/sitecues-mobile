@@ -92,16 +92,16 @@ var optimizerConfig = {
     // Without this, the paths would have to be used as Module IDs
     // and that is just ugly and not fun.
     paths : optimizerPaths,
-    // Run a callback for each file in the build, so that we can modify it
-    // before it gets written to disk.
-    onBuildRead : onBuildRead,
 
-    // TODO: Figure out expected behavior of useStrict
+    // TODO: Figure out expected behavior of useStrict.
+    //       Docs claim it "allows" using 'use strict',
+    //       but it doesn't seem to matter in practice.
     // useStrict : true,
 
-    // Prevent the optimizer from creating empty stub modules for files that
-    // are included in the build, but don't call define() by themselves.
-    skipModuleInsertion : true,
+    // When copying source files to the build directory, ignore any that match
+    // this pattern. We ignore README files for convenience, so that you can
+    // make use of them without dirtying the build.
+    fileExclusionRegExp: /README.md$/i,
 
     // When copying files from the source to the build dir,
     // skip any that have been put into a "modules" bundle.
@@ -115,7 +115,10 @@ var optimizerConfig = {
             // Add specific files or modules and their dependencies to the
             // built file.
             include : [
+                // Add Alameda, our AMD module loader, so that we can load
+                // code on-demand at runtime.
                 moduleId.AMD_LOADER,
+                // Add the main entry point of sitecues.
                 moduleId.CORE
             ],
             // At the end of the built file, execute these modules.
@@ -124,6 +127,13 @@ var optimizerConfig = {
             ]
         }
     ],
+
+    // Run a callback for each file in the build, so that we can modify it
+    // before it gets written to disk.
+    onBuildRead : onBuildRead,
+    // Prevent the optimizer from creating empty stub modules for files that
+    // are included in the build, but don't call define() by themselves.
+    skipModuleInsertion : true,
     // Output a source map file, which tells the browser
     // how to pretend the built file is not minified
     // when developer tools are used.
