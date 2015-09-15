@@ -1,7 +1,7 @@
 /*
-    build
-    -----
-    This task compiles the library into a distributable format.
+    build.js
+    --------
+    Tasks for compiling the library into a distributable format.
 */
 
 var // Helpers for disk I/O and other filesystem issues.
@@ -77,38 +77,16 @@ function onBuildRead(moduleName, path, contents) {
 var optimizerConfig = {
     // Directory to use as the basis for resolving most other relative paths.
     baseUrl : 'lib/js',
-    modules : [
-        // Module that starts the dependency graph.
-        {
-            // Add Alameda, our AMD module loader, so that we can load
-            // code on-demand at runtime.
-            name   : NAMESPACE,
-            create : true,
-            skipModuleInsertion : true,
-            // Add other files or modules to the build, which are not listed
-            // as dependencies of the main entry point.
-            include : [
-                moduleId.AMD_LOADER,
-                moduleId.CORE
-            ],
-            // At the end of the built file, trigger these modules.
-            insertRequire : [
-                moduleId.CORE
-            ]
-        }
-    ],
     // Path to write the final output to.
     dir : 'build',
     // Add the require() and define() functions as methods of our namespace,
     // to avoid conflicts with customer pages.
     namespace : NAMESPACE,
-
     // Describe folders (and optionally, their "main" file)
     packages : [
         'ui',
         'audio'
     ],
-    removeCombined : true,
     // Tell the optimizer where certain modules can be found on disk,
     // in cases where it has no other way to figure that out.
     // Without this, the paths would have to be used as Module IDs
@@ -124,6 +102,28 @@ var optimizerConfig = {
     // Prevent the optimizer from creating empty stub modules for files that
     // are included in the build, but don't call define() by themselves.
     skipModuleInsertion : true,
+
+    // When copying files from the source to the build dir,
+    // skip any that have been put into a "modules" bundle.
+    removeCombined : true,
+    modules : [
+        // The main entry point: sitecues.js
+        {
+            name   : NAMESPACE,
+            create : true,
+            skipModuleInsertion : true,
+            // Add specific files or modules and their dependencies to the
+            // built file.
+            include : [
+                moduleId.AMD_LOADER,
+                moduleId.CORE
+            ],
+            // At the end of the built file, execute these modules.
+            insertRequire : [
+                moduleId.CORE
+            ]
+        }
+    ],
     // Output a source map file, which tells the browser
     // how to pretend the built file is not minified
     // when developer tools are used.

@@ -2,12 +2,14 @@
 
 var // Task runner and build system.
     gulp     = require('gulp'),
-    testsite = require('./task/testsite'),
-    build    = require('./task/build');
-
+    clean    = require('./task/clean'),
+    build    = require('./task/build'),
+    testsite = require('./task/testsite');
 
 
 // Register tasks, so that Gulp understands what to do by name.
+
+gulp.task('clean', clean);
 
 gulp.task('build', build);
 
