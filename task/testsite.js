@@ -145,6 +145,7 @@ function stopTestsite() {
         // the process manager will throw an error. But its not worth an
         // ugly stack trace to the face.
         .catch((err) => {
+
             if (err.msg === 'process name not found') {
                 console.log('The testsite doesn\'t seem to be running. Nothing to do.');
                 return;

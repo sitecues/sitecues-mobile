@@ -2,6 +2,10 @@
 
 const testsite = require('../server');
 
+process.on('unhandledRejection', (err) => {
+    throw err;
+});
+
 let cancelled = false;
 
 process.on('SIGINT', () => {
@@ -18,10 +22,14 @@ process.on('SIGINT', () => {
     testsite.stop();
 });
 
-testsite.start().then(() => {
-    // Tell the master process managing us that the testsite is ready.
-    // We do this so that programs can launch it indirectly and still
-    // be notified when it is okay to run code that depends upon the
-    // testsite being ready.
-    process.send(testsite.READY_MSG);
-});
+const ready = testsite.start();
+
+// Tell the master process managing us that the testsite is ready.
+// We do this so that programs can launch it indirectly and still
+// be notified when it is okay to run code that depends upon the
+// testsite being ready.
+if (typeof process.send === 'function') {
+    ready.then(() => {
+        process.send(testsite.READY_MSG);
+    });
+}

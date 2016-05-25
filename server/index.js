@@ -3,19 +3,20 @@
 const
     // Server framework.
     hapi       = require('hapi'),
-    // Templating engine.
-    handlebars = require('handlebars'),
     // Application metadata.
     pkg        = require('../package.json'),
     // Cross-platform utilities for resolving and normalizing paths.
     path       = require('path'),
-    // Pretty print JSON objects as strings.
-    jsonAlign  = require('json-align'),
-    // Process management.
-    pm2        = require('pm2'),
     APP_NAME   = pkg.name + '-testsite',
-    VERSION    = pkg.version,
-    server     = new hapi.Server(),
+    server     = new hapi.Server({
+        connections: {
+            routes: {
+                files: {
+                    relativeTo: path.join(__dirname, 'store')
+                }
+            }
+        }
+    }),
     _start     = server.start.bind(server);
 
 // The grunt-hapi plugin we currently use expects to be able to call start() on
@@ -47,10 +48,10 @@ function doStart(resolve, reject) {
         }
 
         // Use the views plugin we registered with the server
-        // to configure how it will display content.
+        // to configure how it will render templates.
         server.views({
             engines : {
-                html : handlebars
+                html : require('handlebars')
             },
             relativeTo   : path.join(__dirname, 'view'),
             path         : './',
@@ -63,6 +64,13 @@ function doStart(resolve, reject) {
             // Directory name where helpers are stored.
             helpersPath  : 'helper'
         });
+
+        // Add publicly available routes.
+        server.route([
+            require('./route/status'),
+            require('./route/index'),
+            require('./route/logo')
+        ]);
 
         // Tell Hapi to begin listening on the configured hostname(s) and port(s).
         _start(onStart);
@@ -89,50 +97,6 @@ function start() {
 
 // Setup a virtual server instance.
 server.connection({ port : 3000 });
-
-// Add publicly available routes.
-server.route({
-    method  : 'GET',
-    path    : '/',
-    handler : function (request, reply) {
-       reply.view('index');
-    }
-});
-
-server.route({
-    method  : 'GET',
-    path    : '/status',
-    handler : function (request, reply) {
-
-        const status = {
-            app        : APP_NAME,
-            version    : VERSION,
-            statusCode : 200,
-            status     : 'OK',
-            time       : (new Date()).toISOString(),
-            process    : {
-                title   : process.title,
-                version : process.version,
-                pid     : process.pid,
-                uptime  : process.uptime()
-            }
-        };
-
-        reply(jsonAlign(status))
-        // Inform Hapi that our string is actually valid JSON.
-        .type('application/json');
-    }
-});
-
-server.route({
-    method  : 'GET',
-    path    : '/sitecues-symbol.png',
-    handler : function (request, reply) {
-        reply.file(
-            path.join(__dirname, 'store/sitecues-symbol.png')
-        );
-    }
-});
 
 server.start = start;
 
