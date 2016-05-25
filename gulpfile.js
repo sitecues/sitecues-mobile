@@ -1,6 +1,7 @@
 'use strict';
 
-var // Task runner and build system.
+const
+    // Task runner and build system.
     gulp     = require('gulp'),
     clean    = require('./task/clean'),
     build    = require('./task/build'),
@@ -20,7 +21,7 @@ gulp.task('start-testsite', testsite.start);
 gulp.task('browse-testsite', testsite.browse);
 gulp.task('stop-testsite', testsite.stop);
 
-var dev = gulp.series(
+const dev = gulp.series(
     testsite.start,
     testsite.browse
 );
