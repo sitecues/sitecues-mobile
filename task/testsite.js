@@ -28,6 +28,7 @@ const // Async control flow helpers.
     TESTSITE_READY_MSG = testsite.READY_MSG;
 
 function watchTestsite() {
+
     function onChange(event) {
         console.log('Changes detected in the testsite. Restarting it.');
         pm2Reload(TESTSITE_NAME).then(() => {
@@ -72,7 +73,7 @@ function runTestsite() {
             name      : TESTSITE_NAME,      // Register a process by name.
             script    : TESTSITE_BIN_PATH,  // Code to run the testsite.
             exec_mode : 'cluster',          // Multiple instances allowed.
-            instances : -1,                 // How many CPU cores to utilize.
+            instances : -4,                 // How many CPU cores to utilize.
             max_memory_restart : '140M'     // Threshold to assume memory leakage.
         });
 }
@@ -89,20 +90,32 @@ function waitForTestsiteInit(bus) {
             // created by PM2. Luckily, promises are immune to
             // calling resolve() multiple times.
             bus.on('process:msg', (msg) => {
-                if (msg === TESTSITE_READY_MSG) {
+                if (msg.raw === TESTSITE_READY_MSG) {
                     resolve();
                     resolved = true;
                 }
             });
             setTimeout(
                 () => {
-                    if (!resolved) {
-                        console.warn(
-                            'The testsite is taking a long time to start.'
-                        );
+                    if (resolved) {
+                        return;
                     }
+                    console.warn(
+                        'The testsite is taking a long time to start.'
+                    );
+                    setTimeout(
+                        () => {
+                            if (resolved) {
+                                return;
+                            }
+                            reject(new Error(
+                                'The testsite is unresponsive. Giving up.'
+                            ));
+                        },
+                        1000
+                    );
                 },
-                1500
+                2000
             );
         });
 }

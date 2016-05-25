@@ -16,8 +16,7 @@ const
     APP_NAME   = pkg.name + '-testsite',
     VERSION    = pkg.version,
     server     = new hapi.Server(),
-    _start     = server.start.bind(server),
-    _stop      = server.stop.bind(server);
+    _start     = server.start.bind(server);
 
 // The grunt-hapi plugin we currently use expects to be able to call start() on
 // our exported Hapi instance. Problem is, we shouldn't start until after all
@@ -88,20 +87,6 @@ function start() {
     return new Promise(doStart);
 }
 
-function stop(...args) {
-
-    return new Promise((resolve, reject) => {
-        _stop(...args, (err) => {
-            if (err) {
-                // Server was unable to stop.
-                reject(err);
-                return;
-            }
-            resolve();
-        });
-    });
-}
-
 // Setup a virtual server instance.
 server.connection({ port : 3000 });
 
@@ -150,7 +135,6 @@ server.route({
 });
 
 server.start = start;
-server.stop  = stop;
 
 server.NAME  = APP_NAME;
 // Project root relative path to the binary that runs the testsite.
