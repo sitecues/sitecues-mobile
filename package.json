@@ -22,6 +22,10 @@
   "bin": {
     "sitecues-mobile-testsite": "bin/sitecues-mobile-testsite.js"
   },
+  "dependencies": {
+    "alameda": "1.0.0",
+    "jquery": "2.2.4"
+  },
   "devDependencies": {
     "bluebird": "3.4.0",
     "browser-sync": "2.12.8",
@@ -44,9 +48,5 @@
     "speech",
     "mobile",
     "touch"
-  ],
-  "dependencies": {
-    "alameda": "^0.2.0",
-    "jquery": "^2.2.4"
-  }
+  ]
 }

@@ -4,7 +4,9 @@
     Tasks for compiling the library into a distributable format.
 */
 
-var // Helpers for disk I/O and other filesystem issues.
+'use strict';
+
+const // Helpers for disk I/O and other filesystem issues.
     fs = require('fs'),
     // Helpers for dealing with filesystem paths in a cross-platform way.
     pathUtil = require('path'),
@@ -18,10 +20,6 @@ var // Helpers for disk I/O and other filesystem issues.
     optimizer = require('requirejs'),
     // Our global namespace in the browser.
     NAMESPACE = 'sitecues',
-    // A block of code to insert into the built file, which will tell our AMD
-    // loader how to behave at runtime. This is different than the build
-    // configuration given to the optimizer, although they may overlap.
-    preamble,
     // Here we store the names of modules we will need to refer to by name in
     // other parts of the build configuration. Even though they look similar,
     // module IDs are not paths. They are somewhat arbitrarily named
@@ -32,15 +30,14 @@ var // Helpers for disk I/O and other filesystem issues.
     },
     // Specify where on disk a given module name can be found. This helps avoid
     // naming modules based on their path and the confusion that causes.
-    optimizerPaths = {
-        // Tell the optimizer it doesn't need to try to find "Promise", because
-        // that is a special module ID set in the configuration for Alameda,
-        // which asks it to expose its internal implementation of "prim".
-        // In other words, if Alameda is bundled, so is "Promise".
-        'Promise' : 'empty:'
-    };
+    optimizerPaths = {};
 
 optimizerPaths[moduleId.AMD_LOADER] = path.AMD_LOADER;
+
+// A block of code to insert into the built file, which will tell our AMD
+// loader how to behave at runtime. This is different than the build
+// configuration given to the optimizer, although they may overlap.
+let preamble;
 
 // Callback for each file that the RequireJS optimizer (r.js) reads while it is
 // tracing dependencies for our build.
@@ -51,8 +48,6 @@ function onBuildRead(moduleName, path, contents) {
     //       It doesn't seem to care about the return value the
     //       first time around, but it does the second. Weird.
 
-    // By default, assume we don't want to modify the file.
-    var result = contents;
     //console.log('moduleName :', moduleName);
     //console.log('path       :', path);
     if (moduleName === moduleId.AMD_LOADER) {
@@ -61,7 +56,7 @@ function onBuildRead(moduleName, path, contents) {
         // We also take the opportunity to prepend our sanity check,
         // because the optimizer gaurantees this will end up at the
         // top of the built file.
-        result = preamble + result;
+        return preamble + contents;
     }
 
     // console.log('This is onBuildRead:');
@@ -71,10 +66,10 @@ function onBuildRead(moduleName, path, contents) {
     // console.log('Path                :', path);
     // console.log('Contents            :', contents);
 
-    return result;
+    return contents;
 }
 
-var optimizerConfig = {
+const optimizerConfig = {
     // Directory to use as the basis for resolving most other relative paths.
     baseUrl : 'lib/js',
     // Path to write the final output to.
@@ -101,7 +96,7 @@ var optimizerConfig = {
     // When copying source files to the build directory, ignore any that match
     // this pattern. We ignore README files for convenience, so that you can
     // make use of them without dirtying the build.
-    fileExclusionRegExp: /README.md$/i,
+    fileExclusionRegExp : /README.md$/i,
 
     // When copying files from the source to the build dir,
     // skip any that have been put into a "modules" bundle.
@@ -153,7 +148,7 @@ var optimizerConfig = {
         },
         mangle   : true,
         warnings : true,
-        compress: {
+        compress : {
             booleans      : true,
             cascade       : true,
             comparisons   : true,
@@ -181,18 +176,19 @@ var optimizerConfig = {
     }
 };
 
-function runBuild(resolve, reject) {
-    optimizer.optimize(
-        optimizerConfig,
-        resolve,
-        reject
-    );
-}
 
 function build() {
-    // TODO: Make this async, chain the runBuild promise after it.
+
+    // TODO: Make this async, chain the promise after it.
     preamble = fs.readFileSync(path.PREAMBLE, 'utf8');
-    return new Promise(runBuild);
+
+    return new Promise((resolve, reject) => {
+            optimizer.optimize(
+                optimizerConfig,
+                resolve,
+                reject
+            );
+        });
 }
 
 module.exports = build;
