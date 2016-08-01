@@ -30,4 +30,4 @@ See our [contributing guidelines](https://github.com/sitecues/sitecues-mobile/bl
 
 ## License
 
-[MPL-2.0](https://github.com/sitecues/sitecues-mobile/blob/master/LICENSE "The license for sitecues-mobile.") © [Seth Holladay](http://seth-holladay.com "Author of sitecues-mobile.")
+Copyright © [Sitecues](https://sitecues.com "Owner of sitecues-mobile."). All rights reserved.
