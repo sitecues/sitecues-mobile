@@ -6,31 +6,32 @@
 
 'use strict';
 
-const // Helpers for disk I/O and other filesystem issues.
-    fs = require('fs'),
-    // Helpers for dealing with filesystem paths in a cross-platform way.
-    pathUtil = require('path'),
-    path = {
-        // This path is relative to this file itself.
-        PREAMBLE   : pathUtil.join(__dirname, '..', 'preamble.js'),
-        // This path is relative to the baseUrl set later.
-        AMD_LOADER : pathUtil.join(__dirname, '..', 'node_modules', 'alameda', 'alameda'),
-    },
-    // r.js build optimizer, used to bundle up the library for best efficiency.
-    optimizer = require('requirejs'),
-    // Our global namespace in the browser.
-    NAMESPACE = 'sitecues',
-    // Here we store the names of modules we will need to refer to by name in
-    // other parts of the build configuration. Even though they look similar,
-    // module IDs are not paths. They are somewhat arbitrarily named
-    // references to specific modules.
-    moduleId = {
-        CORE       : 'core',
-        AMD_LOADER : 'amdLoader'
-    },
-    // Specify where on disk a given module name can be found. This helps avoid
-    // naming modules based on their path and the confusion that causes.
-    optimizerPaths = {};
+// Helpers for disk I/O and other filesystem issues.
+const fs = require('fs');
+// Helpers for dealing with filesystem paths in a cross-platform way.
+const pathUtil = require('path');
+// r.js build optimizer, used to bundle up the library for best efficiency.
+const optimizer = require('requirejs');
+
+const path = {
+    // This path is relative to this file itself.
+    PREAMBLE   : pathUtil.join(__dirname, '..', 'preamble.js'),
+    // This path is relative to the baseUrl set later.
+    AMD_LOADER : pathUtil.join(__dirname, '..', 'node_modules', 'alameda', 'alameda')
+};
+// Our global namespace in the browser.
+const namespace = 'sitecues';
+// Here we store the names of modules we will need to refer to by name in
+// other parts of the build configuration. Even though they look similar,
+// module IDs are not paths. They are somewhat arbitrarily named
+// references to specific modules.
+const moduleId = {
+    CORE       : 'core',
+    AMD_LOADER : 'amdLoader'
+};
+// Specify where on disk a given module name can be found. This helps avoid
+// naming modules based on their path and the confusion that causes.
+const optimizerPaths = {};
 
 optimizerPaths[moduleId.AMD_LOADER] = path.AMD_LOADER;
 
@@ -41,15 +42,13 @@ let preamble;
 
 // Callback for each file that the RequireJS optimizer (r.js) reads while it is
 // tracing dependencies for our build.
-function onBuildRead(moduleName, path, contents) {
-
-    // TODO: Figure out why the RequireJS optimizer r.js is calling
-    //       our onBuildRead callback twice for some files.
-    //       It doesn't seem to care about the return value the
-    //       first time around, but it does the second. Weird.
-
-    //console.log('moduleName :', moduleName);
-    //console.log('path       :', path);
+// TODO: Figure out why the RequireJS optimizer r.js is calling
+//       our onBuildRead callback twice for some files.
+//       It doesn't seem to care about the return value the
+//       first time around, but it does the second. Weird.
+const onBuildRead = (moduleName, path, contents) => {
+    // console.log('moduleName :', moduleName);
+    // console.log('path       :', path);
     if (moduleName === moduleId.AMD_LOADER) {
         // Prepend our Alameda runtime configuration to Alameda itself,
         // so that we can use options like "skipDataMain" in it.
@@ -67,7 +66,7 @@ function onBuildRead(moduleName, path, contents) {
     // console.log('Contents            :', contents);
 
     return contents;
-}
+};
 
 const optimizerConfig = {
     // Directory to use as the basis for resolving most other relative paths.
@@ -76,7 +75,7 @@ const optimizerConfig = {
     dir : 'build',
     // Add the require() and define() functions as methods of our namespace,
     // to avoid conflicts with customer pages.
-    namespace : NAMESPACE,
+    namespace,
     // Describe folders (and optionally, their "main" file)
     packages : [
         'ui',
@@ -104,7 +103,7 @@ const optimizerConfig = {
     modules : [
         // The main entry point: sitecues.js
         {
-            name   : NAMESPACE,
+            name   : namespace,
             create : true,
             skipModuleInsertion : true,
             // Add specific files or modules and their dependencies to the
@@ -125,7 +124,7 @@ const optimizerConfig = {
 
     // Run a callback for each file in the build, so that we can modify it
     // before it gets written to disk.
-    onBuildRead : onBuildRead,
+    onBuildRead,
     // Prevent the optimizer from creating empty stub modules for files that
     // are included in the build, but don't call define() by themselves.
     skipModuleInsertion : true,
@@ -176,19 +175,16 @@ const optimizerConfig = {
     }
 };
 
-
-function build() {
-
-    // TODO: Make this async, chain the promise after it.
+const build = () => {
     preamble = fs.readFileSync(path.PREAMBLE, 'utf8');
 
     return new Promise((resolve, reject) => {
-            optimizer.optimize(
-                optimizerConfig,
-                resolve,
-                reject
-            );
-        });
-}
+        optimizer.optimize(
+            optimizerConfig,
+            resolve,
+            reject
+        );
+    });
+};
 
 module.exports = build;

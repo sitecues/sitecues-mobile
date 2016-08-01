@@ -1,15 +1,13 @@
 'use strict';
 
-const
-    pkgDir = require('pkg-dir'),
-    path   = require('path'),
-    del    = require('del'),
-    buildDir = 'build';
+const path = require('path');
+const pkgDir = require('pkg-dir');
+const del = require('del');
 
-function clean() {
+const clean = () => {
     return pkgDir(__dirname).then((appRoot) => {
-        return del(path.resolve(appRoot, buildDir));
+        return del(path.resolve(appRoot, 'build'));
     });
-}
+};
 
 module.exports = clean;

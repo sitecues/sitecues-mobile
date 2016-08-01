@@ -1,21 +1,17 @@
-# Compiled code is created using the build system on each machine.
-build
-
 # Dependencies are installed manually or using a build process, so they
 # can benefit from machine-specific compiling, etc.
 node_modules
 
-# Logs have internal metadata for versioning
-# and are shared via HTTP and other means.
+# Build artifacts are unique to each developer.
+build
+latest-build
+report
+
+# Log data is unique to each developer.
 log
-*.log
 
-# Runtime data is different for each session and each developer.
-pid
-*.pid
-
-# Operating system data is different for each developer.
+# Operating system data is unique to each developer.
 .DS_Store
 
-# IDE data is different for each developer.
+# IDE data is unique to each developer.
 .idea

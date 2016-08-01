@@ -1,49 +1,33 @@
-# sitecues for Touch
+# sitecues-mobile
 
-## Getting Started
+> Usability and speech tools for mobile websites.
 
-To use this app
-* Clone [repository](https://bitbucket.org/ai_squared/sitecues-mobile)
-* Setup server
-* Start the index.html in your favorite browser
-* To indicate sitecues is injected, look at the right bottom corner. You should be able to see sitecues icon
-* Enjoy!
+## Why?
 
-## Development
+ - Mobile devices are popular among web users.
+ - People using mobile devices have [situational needs](http://accessibility.co.uk/wiki/situational-disability).
+ - Turnkey solution to improve usability.
 
-### Structure of the files
-* Theme is located in the root directory
-* sitecues file(s) located in /path/to/project/lib
+## Install
 
-### Features
-Since the project is in proto stage this section may differ heavily. Currently, it contains the following functionality:
-* Detect if the device connected to the Internet or not
-* Badge: appears in the bottom right corner. Click the icon to speech on/off. You'll hear the voice cues.
-* TTS:   when speech is on, select the text to read aloud. You should hear the voice.
-* Invert contrast: TBD.
+For customers, Sitecues Mobile is automatically delivered to appropriate devices by the main Sitecues service. No additional setup is required.
 
-### Design
-It's an IIFE that runs on page load.
+A developer install involves cloning the project and running `npm install` once inside of it.
 
-### UI
-TBD
+## Usage
 
-### Commit
-* Use development branch 'dev' or your personal branch for push
-* 'master' branch is reserved for production
+Coming soon.
 
+## Contributing
 
-## Bugs and Issues
+See our [contributing guidelines](https://github.com/sitecues/sitecues-mobile/blob/master/CONTRIBUTING.md "The guidelines for participating in this project.") for more details.
 
-Have a bug or an issue with this theme? Open a bug in Jira.
+1. [Fork it](https://github.com/sitecues/sitecues-mobile/fork).
+2. Make a feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. [Submit a pull request](https://github.com/sitecues/sitecues-mobile/compare "Submit code to this project for review.").
 
-## Creator and Contributors
+## License
 
-Start Bootstrap was created by **Seth Holladay** and is maintained by **Anna Khabibullina**, Software Engineers at [sitecues](http://www.sitecues.com/).
-
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
-
-## Copyright and License
-
-sitecues bu AiSquared
+[MPL-2.0](https://github.com/sitecues/sitecues-mobile/blob/master/LICENSE "The license for sitecues-mobile.") © [Seth Holladay](http://seth-holladay.com "Author of sitecues-mobile.")

@@ -1,12 +1,10 @@
 'use strict';
 
-const
-    // Task runner and build system.
-    gulp     = require('gulp'),
-    clean    = require('./task/clean'),
-    build    = require('./task/build'),
-    testsite = require('./task/testsite');
-
+// Task runner and build system.
+const gulp = require('gulp');
+const clean = require('./task/clean');
+const build = require('./task/build');
+const testsite = require('./task/testsite');
 
 // Register tasks, so that Gulp understands what to do by name.
 

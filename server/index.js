@@ -1,23 +1,22 @@
 'use strict';
 
-const
-    // Server framework.
-    hapi       = require('hapi'),
-    // Application metadata.
-    pkg        = require('../package.json'),
-    // Cross-platform utilities for resolving and normalizing paths.
-    path       = require('path'),
-    APP_NAME   = pkg.name + '-testsite',
-    server     = new hapi.Server({
-        connections: {
-            routes: {
-                files: {
-                    relativeTo: path.join(__dirname, 'store')
-                }
+// Server framework.
+const hapi = require('hapi');
+// Application metadata.
+const pkg = require('../package.json');
+// Cross-platform utilities for resolving and normalizing file paths.
+const path = require('path');
+const appName = pkg.name + '-testsite';
+const server = new hapi.Server({
+    connections : {
+        routes : {
+            files : {
+                relativeTo : path.join(__dirname, 'store')
             }
         }
-    }),
-    _start     = server.start.bind(server);
+    }
+});
+const _start = server.start.bind(server);
 
 // The grunt-hapi plugin we currently use expects to be able to call start() on
 // our exported Hapi instance. Problem is, we shouldn't start until after all
@@ -33,7 +32,7 @@ function doStart(resolve, reject) {
             return;
         }
 
-        console.log('Server running at: ' + server.info.uri);
+        console.log('Server running at:', server.info.uri);
         // Signal to the outside world that the server is ready and listening.
         resolve(server.info.uri);
     }
@@ -91,7 +90,7 @@ function doStart(resolve, reject) {
     );
 }
 
-function start() {
+const start = () => {
     return new Promise(doStart);
 }
 
@@ -100,11 +99,11 @@ server.connection({ port : 3000 });
 
 server.start = start;
 
-server.NAME  = APP_NAME;
+server.NAME = appName;
 // Project root relative path to the binary that runs the testsite.
-server.BIN_PATH = pkg.bin[APP_NAME];
+server.BIN_PATH = pkg.bin[appName];
 // Define a signal that dependants should emit or listen for
 // when determining testsite readiness.
-server.READY_MSG = APP_NAME + ' is ready';
+server.READY_MSG = appName + ' is ready';
 
 module.exports = server;

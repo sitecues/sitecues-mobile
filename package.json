@@ -1,19 +1,14 @@
 {
   "name": "sitecues-mobile",
   "version": "0.0.1",
-  "description": "Zoom and speech for mobile websites.",
-  "homepage": "https://sitecues.com",
-  "license": "SEE LICENSE IN LICENSE",
+  "description": "Usability and speech tools for mobile websites.",
+  "homepage": "https://github.com/sitecues/sitecues-mobile",
+  "main": "index.js",
   "author": {
     "name": "Seth Holladay",
-    "email": "me@seth-holladay.com",
-    "url": "http://seth-holladay.com"
+    "url": "http://seth-holladay.com",
+    "email": "me@seth-holladay.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@bitbucket.org:ai_squared/sitecues-mobile.git"
-  },
-  "main": "lib/index.js",
   "private": true,
   "scripts": {
     "test": "grunt test",
@@ -22,6 +17,19 @@
   "bin": {
     "sitecues-mobile-testsite": "bin/sitecues-mobile-testsite.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sitecues/sitecues-mobile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sitecues/sitecues-mobile/issues",
+    "email": "me@seth-holladay.com"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "files": [
+    "lib",
+    "index.js"
+  ],
   "dependencies": {
     "alameda": "1.0.0",
     "jquery": "2.2.4"
@@ -30,6 +38,7 @@
     "bluebird": "3.4.0",
     "browser-sync": "2.12.8",
     "del": "2.2.0",
+    "eslint-config-tidy": "0.1.0",
     "grunt": "1.0.1",
     "grunt-contrib-clean": "1.0.0",
     "grunt-contrib-requirejs": "1.0.0",
@@ -41,12 +50,17 @@
     "json-align": "0.1.0",
     "pkg-dir": "1.0.0",
     "pm2": "1.1.3",
-    "vision": "4.1.0"
+    "requirejs": "2.2.0",
+    "vision": "4.1.0",
+    "xo": "0.16.0"
   },
   "keywords": [
     "zoom",
     "speech",
     "mobile",
     "touch"
-  ]
+  ],
+  "xo": {
+    "extend": "eslint-config-tidy"
+  }
 }

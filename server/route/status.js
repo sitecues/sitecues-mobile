@@ -1,21 +1,19 @@
 'use strict';
 
-const
-    // Application metadata.
-    pkg        = require('../../package.json'),
-    // Pretty print JSON objects as strings.
-    jsonAlign  = require('json-align'),
-    APP_NAME   = pkg.name + '-testsite',
-    VERSION    = pkg.version;
+// Application metadata.
+const pkg = require('../../package.json');
+// Pretty print JSON objects as strings.
+const jsonAlign = require('json-align');
+const appName = pkg.name + '-testsite';
+const appVersion = pkg.version;
 
 module.exports = {
     method  : 'GET',
     path    : '/status',
-    handler : function (request, reply) {
-
+    handler(request, reply) {
         const status = {
-            app        : APP_NAME,
-            version    : VERSION,
+            app        : appName,
+            version    : appVersion,
             statusCode : 200,
             status     : 'OK',
             time       : (new Date()).toISOString(),
