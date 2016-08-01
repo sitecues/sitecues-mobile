@@ -1,15 +1,14 @@
+#!/usr/bin/env node
+
 'use strict';
 
-const testsite = require('../server');
+require('throw-rejects/register');
 
-process.on('unhandledRejection', (err) => {
-    throw err;
-});
+const testsite = require('../server');
 
 let cancelled = false;
 
 process.on('SIGINT', () => {
-
     if (cancelled) {
         console.warn('\nShutting down immediately. You monster!');
         process.exit(1);

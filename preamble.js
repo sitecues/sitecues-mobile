@@ -14,7 +14,7 @@ if (!window.sitecues || typeof window.sitecues !== 'object') {
     window.sitecues = {};
 }
 
-var sitecues = window.sitecues;
+const sitecues = window.sitecues;
 
 if (!sitecues.config || typeof sitecues.config !== 'object') {
     sitecues.config = {};
@@ -38,12 +38,12 @@ if (!sitecues.config.scriptUrl) {
 
 // NOTE: This variable name is special. Alameda looks for this to decide if
 //       configuration has been declared prior to it running.
-var require = {
+const require = {
     // Tell Alameda to never search for or execute a script with a "data-main"
     // attribute, since this could have weird consequences on customer pages.
     skipDataMain : true,
     // Make aliases to modules, for convenience.
-    map : {
+    map          : {
         // All modules get 'jquery-private' when they ask for 'jquery',
         // so that we can secretly return a customized value which
         // implements .noConflict() to avoid puking on customers.

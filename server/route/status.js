@@ -1,9 +1,9 @@
 'use strict';
 
-// Application metadata.
-const pkg = require('../../package.json');
 // Pretty print JSON objects as strings.
 const jsonAlign = require('json-align');
+const pkg = require('../../package.json');
+
 const appName = pkg.name + '-testsite';
 const appVersion = pkg.version;
 
