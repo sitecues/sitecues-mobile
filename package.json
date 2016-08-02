@@ -11,7 +11,7 @@
   },
   "private": true,
   "scripts": {
-    "test": "grunt test",
+    "test": "xo",
     "start": "gulp start-testsite"
   },
   "bin": {
