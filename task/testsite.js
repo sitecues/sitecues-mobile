@@ -31,7 +31,7 @@ const testsiteBinPath = testsite.BIN_PATH;
 const testsiteReadyMsg = testsite.READY_MSG;
 
 const watchTestsite = () => {
-    const onChange = (event) => {
+    const onChange = () => {
         console.log('Changes detected in the testsite. Restarting it.');
         pm2Reload(testsiteName).then(() => {
             // Inform all connected browsers that there are changes

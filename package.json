@@ -9,7 +9,6 @@
     "url": "http://seth-holladay.com",
     "email": "me@seth-holladay.com"
   },
-  "private": true,
   "scripts": {
     "test": "xo",
     "start": "gulp start-testsite"
@@ -25,35 +24,33 @@
     "url": "https://github.com/sitecues/sitecues-mobile/issues",
     "email": "me@seth-holladay.com"
   },
+  "engines": {
+    "node": ">=6"
+  },
+  "private": true,
   "license": "SEE LICENSE IN LICENSE",
+  "directories": {
+    "lib": "./lib"
+  },
   "files": [
     "lib",
     "index.js"
   ],
-  "dependencies": {
-    "alameda": "1.0.0",
-    "jquery": "2.2.4"
-  },
   "devDependencies": {
-    "bluebird": "3.4.0",
-    "browser-sync": "2.12.8",
-    "del": "2.2.0",
-    "eslint-config-tidy": "0.2.0",
-    "grunt": "1.0.1",
-    "grunt-contrib-clean": "1.0.0",
-    "grunt-contrib-requirejs": "1.0.0",
-    "grunt-contrib-watch": "1.0.0",
+    "bluebird": "^3.4.1",
+    "browser-sync": "^2.14.0",
+    "del": "^2.2.2",
+    "eslint-config-tidy": "^0.3.2",
     "gulp": "gulpjs/gulp#4.0",
-    "handlebars": "4.0.5",
-    "hapi": "13.4.1",
-    "inert": "4.0.0",
-    "json-align": "0.1.0",
-    "pkg-dir": "1.0.0",
-    "pm2": "1.1.3",
-    "requirejs": "2.2.0",
-    "throw-rejects": "0.1.0",
-    "vision": "4.1.0",
-    "xo": "0.16.0"
+    "handlebars": "^4.0.5",
+    "hapi": "^14.1.0",
+    "inert": "^4.0.0",
+    "json-align": "^0.1.0",
+    "pkg-dir": "^1.0.0",
+    "pm2": "^1.1.3",
+    "throw-rejects": "^0.1.3",
+    "vision": "^4.1.0",
+    "xo": "^0.16.0"
   },
   "keywords": [
     "zoom",
@@ -62,6 +59,14 @@
     "touch"
   ],
   "xo": {
-    "extend": "eslint-config-tidy"
+    "env": "browser",
+    "extend": "tidy",
+    "global": [
+      "sitecues"
+    ],
+    "ignore": [
+      "build/**",
+      "latest-build/**"
+    ]
   }
 }
