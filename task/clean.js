@@ -6,7 +6,7 @@ const del = require('del');
 
 const clean = () => {
     return pkgDir(__dirname).then((appRoot) => {
-        return del(path.resolve(appRoot, 'build'));
+        return del(path.join(appRoot, 'build'));
     });
 };
 
