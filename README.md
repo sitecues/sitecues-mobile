@@ -18,6 +18,10 @@ A developer install involves cloning the project and running `npm install` once 
 
 Coming soon.
 
+## Related
+
+ - [sitecues-core](https://github.com/sitecues/sitecues-core) - Application launcher for Sitecues.
+
 ## Contributing
 
 See our [contributing guidelines](https://github.com/sitecues/sitecues-mobile/blob/master/CONTRIBUTING.md "The guidelines for participating in this project.") for more details.
