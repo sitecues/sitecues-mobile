@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { rollup } = require('rollup');
-const buildDir = require('build-dir');
+const delivr = require('delivr');
 const json = require('rollup-plugin-json');
 const babel = require('rollup-plugin-babel');
 const appName = require('read-pkg-up').sync(__dirname).pkg.name;
@@ -49,7 +49,7 @@ const build = () => {
             readDep('babel-polyfill/dist/polyfill'),
             readDep('whatwg-fetch')
         ]).then((polyfills) => {
-            return buildDir.prepare().then((dir) => {
+            return delivr.prepare({ bucket : appName }).then((dir) => {
                 return bundle.write({
                     format    : 'iife',
                     banner    : polyfills.join(''),
