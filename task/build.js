@@ -44,23 +44,25 @@ const build = () => {
         ]
     };
 
+    let finalize;
     return rollup(bundleConf).then((bundle) => {
         return Promise.all([
             readDep('babel-polyfill/dist/polyfill'),
             readDep('whatwg-fetch')
         ]).then((polyfills) => {
             return delivr.prepare({ bucket : appName }).then((dir) => {
+                finalize = dir.finalize;
                 return bundle.write({
                     format    : 'iife',
                     banner    : polyfills.join(''),
                     dest      : path.join(dir.path, appName + '.js'),
                     sourceMap : true
-                }).then(() => {
-                    // Move the temp dir to its permanent home and set up
-                    // latest links.
-                    return dir.finalize();
                 });
             });
+        }).then(() => {
+            // Move the temp dir to its permanent home and set up
+            // latest links.
+            return finalize();
         });
     });
 };

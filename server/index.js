@@ -8,11 +8,9 @@ const inert = require('inert');
 const vision = require('vision');
 const handlebars = require('handlebars');
 const pkg = require('../package.json');
-const routes = [
-    require('./route/status'),
-    require('./route/index'),
-    require('./route/logo')
-];
+const status = require('./route/status');
+const home = require('./route/index');
+const logo = require('./route/logo');
 
 const appName = pkg.name + '-testsite';
 const server = new Server({
@@ -69,7 +67,11 @@ const doStart = (resolve, reject) => {
         });
 
         // Add publicly available routes.
-        server.route(routes);
+        server.route([
+            status,
+            home,
+            logo
+        ]);
 
         // Tell Hapi to begin listening on the configured hostname(s) and port(s).
         _start(onStart);

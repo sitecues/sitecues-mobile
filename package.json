@@ -69,14 +69,20 @@
     "touch"
   ],
   "xo": {
-    "env": "browser",
     "extend": "tidy",
-    "global": [
-      "sitecues"
-    ],
     "ignore": [
       "build/**",
-      "latest-build/**"
+      "latest-build/**",
+      "testsite/**"
+    ],
+    "overrides": [
+      {
+        "files": "lib/**",
+        "env": "browser",
+        "global": [
+          "sitecues"
+        ]
+      }
     ]
   }
 }

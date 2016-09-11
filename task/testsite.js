@@ -73,11 +73,11 @@ const syncBrowsers = () => {
 
 const runTestsite = () => {
     return pm2Start({
-        name               : testsiteName,     // Register a process by name.
-        script             : testsiteBinPath,  // Code to run the testsite.
-        exec_mode          : 'cluster',        // Multiple instances allowed.
-        instances          : -4,               // How many CPU cores to utilize.
-        max_memory_restart : '140M'            // Threshold to assume memory leakage.
+        name             : testsiteName,     // Register a process by name.
+        script           : testsiteBinPath,  // Code to run the testsite.
+        execMode         : 'cluster',        // Multiple instances allowed.
+        instances        : -4,               // How many CPU cores to utilize.
+        maxMemoryRestart : '140M'            // Threshold to assume memory leakage.
     });
 };
 
