@@ -41,6 +41,7 @@
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
+    "babel-plugin-transform-es2015-classes": "^6.14.0",
     "babel-polyfill": "^6.13.0",
     "babel-preset-es2015-rollup": "^1.2.0",
     "bluebird": "^3.4.1",
