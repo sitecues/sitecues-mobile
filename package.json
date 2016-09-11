@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "xo",
-    "start": "gulp start-testsite"
+    "start": "gulp start-testsite",
+    "build": "gulp build"
   },
   "bin": {
     "sitecues-mobile-testsite": "bin/sitecues-mobile-testsite.js"

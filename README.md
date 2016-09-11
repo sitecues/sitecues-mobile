@@ -1,4 +1,4 @@
-# sitecues-mobile
+# sitecues-mobile [![Build status for sitecues-mobile on Circle CI.](https://img.shields.io/circleci/project/sitecues/sitecues-mobile/master.svg "Circle Build Status")](https://circleci.com/gh/sitecues/sitecues-mobile "Sitecues Mobile Builds")
 
 > Usability and speech tools for mobile websites.
 
