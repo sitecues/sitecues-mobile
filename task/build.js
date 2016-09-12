@@ -55,7 +55,7 @@ const build = () => {
                 return bundle.write({
                     format    : 'iife',
                     banner    : polyfills.join(''),
-                    dest      : path.join(dir.path, appName + '.js'),
+                    dest      : path.join(dir.path, 'js', appName + '.js'),
                     sourceMap : true
                 });
             });
