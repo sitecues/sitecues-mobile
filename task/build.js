@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const cpy = require('cpy');
 const { rollup } = require('rollup');
 const delivr = require('delivr');
 const json = require('rollup-plugin-json');
@@ -52,12 +53,19 @@ const build = () => {
         ]).then((polyfills) => {
             return delivr.prepare({ bucket : appName }).then((dir) => {
                 finalize = dir.finalize;
-                return bundle.write({
-                    format    : 'iife',
-                    banner    : polyfills.join(''),
-                    dest      : path.join(dir.path, 'js', appName + '.js'),
-                    sourceMap : true
-                });
+                return Promise.all([
+                    cpy(['{css,img}/**'], dir.path, {
+                        cwd     : 'lib',
+                        parents : true,
+                        nodir   : true
+                    }),
+                    bundle.write({
+                        format    : 'iife',
+                        banner    : polyfills.join(''),
+                        dest      : path.join(dir.path, 'js', appName + '.js'),
+                        sourceMap : true
+                    })
+                ]);
             });
         }).then(() => {
             // Move the temp dir to its permanent home and set up

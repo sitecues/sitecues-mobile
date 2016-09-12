@@ -2,7 +2,7 @@
 
 // Pretty print JSON objects as strings.
 const jsonAlign = require('json-align');
-const pkg = require('../../package.json');
+const { pkg } = require('read-pkg-up').sync({ cwd : __dirname });
 
 const appName = pkg.name + '-testsite';
 const appVersion = pkg.version;

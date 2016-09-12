@@ -3,7 +3,7 @@
 module.exports = {
     method  : 'GET',
     path    : '/sitecues-symbol.png',
-    handler(request, reply) {
-        reply.file('sitecues-symbol.png');
+    handler : {
+        file : 'sitecues-symbol.png'
     }
 };
