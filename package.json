@@ -48,7 +48,7 @@
     "browser-sync": "^2.14.0",
     "cpy": "^4.0.1",
     "del": "^2.2.2",
-    "delivr": "^0.2.0",
+    "delivr": "^0.2.1",
     "eslint-config-tidy": "^0.3.2",
     "gulp": "gulpjs/gulp#4.0",
     "handlebars": "^4.0.5",
