@@ -24,7 +24,6 @@ const pm2Start = promisify(pm2.start, { context : pm2 });
 const pm2Reload = promisify(pm2.reload, { context : pm2 });
 const pm2Delete = promisify(pm2.delete, { context : pm2 });
 const pm2LaunchBus = promisify(pm2.launchBus, { context : pm2 });
-const pm2DisconnectBus = promisify(pm2.disconnectBus, { context : pm2 });
 
 const testsiteName = testsite.NAME;
 const testsiteBinPath = testsite.BIN_PATH;
@@ -41,14 +40,7 @@ const watchTestsite = () => {
             });
         });
 
-        // TODO: The reload() method can take a file path as an argument to
-        //       help BrowserSync decide on the most efficient strategy for
-        //       updating the page. We happen to know the full absolute
-        //       path here, would it be useful to pass it along? Does it
-        //       matter that it is absolute? It probably won't be absolute
-        //       in the browser, so could this confuse BrowserSync?
-        //       It might just trigger more complex code paths and slow
-        //       things down.
+        // This is something we could do that might help BrowserSync be efficient.
         // var absolutePath = event.path;
         // browser.reload(absolutePath);
     };
@@ -73,11 +65,13 @@ const syncBrowsers = () => {
 
 const runTestsite = () => {
     return pm2Start({
-        name             : testsiteName,     // Register a process by name.
-        script           : testsiteBinPath,  // Code to run the testsite.
-        execMode         : 'cluster',        // Multiple instances allowed.
-        instances        : -4,               // How many CPU cores to utilize.
-        maxMemoryRestart : '140M'            // Threshold to assume memory leakage.
+        name             : testsiteName,
+        script           : testsiteBinPath,
+        // Load balance betwen CPU cores.
+        execMode         : 'cluster',
+        instances        : -4,
+        // Auto restart if it is leaking memory.
+        maxMemoryRestart : '140M'
     });
 };
 
@@ -128,9 +122,6 @@ const startTestsite = () => {
             return pm2LaunchBus();
         })
         .then(waitForTestsiteInit)
-        .then(() => {
-            return pm2DisconnectBus();
-        })
         .then(() => {
             return pm2Disconnect();
         });
