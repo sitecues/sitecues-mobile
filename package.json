@@ -38,32 +38,22 @@
     "index.js"
   ],
   "dependencies": {
+    "babel-polyfill": "^6.13.0",
     "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-es2015-classes": "^6.14.0",
-    "babel-polyfill": "^6.13.0",
     "babel-preset-es2015-rollup": "^1.2.0",
-    "bluebird": "^3.4.1",
-    "browser-sync": "^2.14.0",
     "cpy": "^4.0.1",
     "del": "^2.2.2",
     "delivr": "^0.4.0",
-    "eslint-config-tidy": "^0.3.2",
+    "eslint-config-tidy": "^0.4.0",
     "gulp": "gulpjs/gulp#4.0",
-    "handlebars": "^4.0.5",
-    "hapi": "^15.0.3",
-    "inert": "^4.0.0",
-    "json-align": "^0.1.0",
     "pkg-dir": "^1.0.0",
-    "pm2": "^2.0.12",
-    "read-pkg-up": "^1.0.1",
-    "rollup": "^0.36.1",
+    "read-pkg-up": "^2.0.0",
+    "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.6.1",
-    "rollup-plugin-json": "^2.0.1",
-    "throw-rejects": "^0.1.3",
-    "vision": "^4.1.0",
-    "xo": "^0.16.0"
+    "rollup-plugin-json": "^2.0.2",
+    "xo": "^0.17.0"
   },
   "keywords": [
     "zoom",
